@@ -63,7 +63,7 @@
                                  style="max-width: 100%;">
                         </a>
                         {% endif %}
-                        <h3 class="item_time" style="margin-top: 10px;">{{ item.data.TimeStr }}</h3>
+                        <h3 class="item_time" style="margin-top: 10px;" >{{ item.data.TimeStr }}</h3>
                     </div>
                 </div>
             </div>
@@ -240,6 +240,9 @@
               if (xmlHttp.readyState == 4){
                 if(xmlHttp.status == 200){
                   window.parent.location = "/python/MessageBoard"
+		          var contentNode = $('#contentInput')[0]
+                  contentNode.value = ""
+		          showModel("Post success, please wait for auto jump to first page! 发送成功啦，请等待跳转到第一页喔！")
                 }else{
                   showModel(xmlHttp.status +" Enconter an error, please retry! 失败啦，请重试！")
                 }
