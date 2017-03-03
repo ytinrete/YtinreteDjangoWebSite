@@ -97,5 +97,3 @@ media/imagesUpload/*
 db.sqlite3
 */migrations/*
 static/*
-YtinretePythonServer/settings.py
-uwsgi.ini
