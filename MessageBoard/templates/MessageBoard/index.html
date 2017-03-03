@@ -63,7 +63,7 @@
                                  style="max-width: 100%;">
                         </a>
                         {% endif %}
-                        <h3 class="item_time" style="margin-top: 10px;" >{{ item.data.TimeStr }}</h3>
+                        <h3 class="item_time" style="margin-top: 10px;">{{ item.data.TimeStr }}</h3>
                     </div>
                 </div>
             </div>
@@ -265,6 +265,16 @@
             }
 
         });
+
+    function textCheck(text){
+      return text.replace(/(?:\r\n|\r|\n)/g, '<br />')
+    }
+
+    var itemContents = $('.item_content')
+    for(var i=0; i< itemContents.length;i++ ){
+        var item = itemContents[i]
+        item.innerHTML = textCheck(item.innerHTML)
+    }
 
 </script>
 

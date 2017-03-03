@@ -10,7 +10,7 @@ import pytz
 # Tools.LoadOldData.load_old()
 
 def load_old():
-    with open("data.txt", "r") as f:
+    with open("data.txt", "r", encoding="UTF-8") as f:
         content = f.readlines()
         count = 0
         content = content[-20:]
