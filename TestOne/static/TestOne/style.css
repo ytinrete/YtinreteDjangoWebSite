@@ -1,0 +1,19 @@
+html, body {
+display: block;
+background: #0ac9f6;
+font-family: "Comic Sans MS";
+}
+
+.title{
+text-align: center;
+margin-top: 20px;
+margin-bottom: 0px;
+color: #ffffff;
+font-size: 60px;
+}
+
+.sub_title{
+text-align: center;
+margin-top: 10px;
+color: #ffffff;
+}
