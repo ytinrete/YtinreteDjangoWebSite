@@ -17,7 +17,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 urlpatterns = [
-    url(r'^python/TestOne/', include('TestOne.urls')),
     url(r'^python/MessageBoard/', include('MessageBoard.urls')),
+    url(r'^python/TestOne/', include('TestOne.urls')),
     url(r'^python/admin/', admin.site.urls),
 ]
