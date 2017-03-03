@@ -95,5 +95,7 @@ data.txt
 .idea
 media/imagesUpload/*
 db.sqlite3
+uwsgi.ini
 */migrations/*
 static/*
+YtinretePythonServer/settings.py
