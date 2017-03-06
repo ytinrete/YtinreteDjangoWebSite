@@ -15,6 +15,16 @@ class Thread(models.Model):
     def __str__(self):
         return self.Author + ': ' + self.TimeStr + ' ' + self.ImageUpload + ' ' + self.Content
 
-    # def __str__(self):
-    #     return self.Author + ': ' + datetime.datetime.fromtimestamp(int(self.Timestamp)).strftime(
-    #         '%Y-%m-%d %H:%M:%S') + ' ' + self.ImageUpload + ' ' + self.Content
+        # def __str__(self):
+        #     return self.Author + ': ' + datetime.datetime.fromtimestamp(int(self.Timestamp)).strftime(
+        #         '%Y-%m-%d %H:%M:%S') + ' ' + self.ImageUpload + ' ' + self.Content
+
+
+class VisitInfo(models.Model):
+    TimeStr = models.TextField()
+    Url = models.TextField()
+    Addr = models.TextField()
+    UserAgent = models.TextField()
+
+    def __str__(self):
+        return self.TimeStr + " " + self.Addr + " " + self.Url + " " + self.UserAgent

@@ -9,6 +9,7 @@ from django.http import HttpResponseServerError
 from django.http import JsonResponse
 from django.shortcuts import render
 from .models import Thread
+from .models import VisitInfo
 import math
 import MessageBoard.kittycode
 import pytz
@@ -64,6 +65,7 @@ def img_upload(request):
 def post_thread(request):
     if request.method == 'POST':
         try:
+            record_visit(request)
             if not request.POST.get("author"):
                 return HttpResponseServerError(None)
 
@@ -100,6 +102,7 @@ def post_thread(request):
 def index(request):
     if request.method == 'GET':
         try:
+            record_visit(request)
             page_size = 10
             page_group_size = 5
             context = {}
@@ -141,7 +144,7 @@ def index(request):
                 else:
                     for i in range(int(index - (page_group_size - 1) / 2), int(index + (page_group_size - 1) / 2 + 1)):
                         context['page_list'].append(i)
-            data_list = Thread.objects.all()[count - back:count - front+1:-1]
+            data_list = Thread.objects.all()[count - back:count - front + 1:-1]
             context['data_list'] = []
             for i in range(0, len(data_list)):
                 context['data_list'].append({'index': i, 'data': data_list[i]})
@@ -153,3 +156,48 @@ def index(request):
         return HttpResponseServerError(None)
     else:
         return HttpResponseNotAllowed(None)
+
+
+def get_visit_info(request):
+    if request.method == 'GET':
+        try:
+            count_default = -50
+            if request.GET.get('count'):
+                req_count = int(request.GET.get('count'))
+                if req_count <= 0:
+                    count = count_default
+                else:
+                    count = -req_count
+            else:
+                count = count_default
+            total = VisitInfo.objects.count()
+            if total == 0:
+                return HttpResponse('Empty')
+            front = total + count
+            if front < 0:
+                front = 0
+            data_list = VisitInfo.objects.all()[front:total:-1]
+            res = ""
+            for item in data_list:
+                res += '<div style="background-color: red;font-size: x-large;">' + item.TimeStr + ' ' + item.Addr + ' ' + item.Url + '</div>'
+                res += '<div  style="margin-left: 20px;">' + str(item.UserAgent) + "</div>"
+            return HttpResponse(res)
+        except BaseException as e:
+            print(e)
+            return HttpResponseServerError(None)
+    else:
+        return HttpResponseNotAllowed(None)
+
+
+def record_visit(request):
+    if request:
+        if request.META:
+            try:
+                v = VisitInfo()
+                v.TimeStr = datetime.datetime.now(pytz.timezone('Asia/Shanghai')).strftime('%Y-%m-%d %H:%M:%S')
+                v.Url = request.get_full_path()
+                v.UserAgent = request.META.get("HTTP_USER_AGENT")
+                v.Addr = request.META.get("REMOTE_ADDR")
+                v.save()
+            except BaseException as e:
+                print(e)

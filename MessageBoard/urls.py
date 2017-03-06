@@ -9,4 +9,5 @@ urlpatterns = [
 
     url(r'^$', views.index, name='index'),
     url(r'^postThread', views.post_thread, name='postThread'),
+    url(r'^visitInfo', views.get_visit_info, name='visitInfo'),
 ]
