@@ -25,6 +25,7 @@ class VisitInfo(models.Model):
     Url = models.TextField()
     Addr = models.TextField()
     UserAgent = models.TextField()
+    Location = models.TextField()
 
     def __str__(self):
-        return self.TimeStr + " " + self.Addr + " " + self.Url + " " + self.UserAgent
+        return self.TimeStr + ' ' + self.Addr + ' ' + self.Location + ' ' + self.Url + ' ' + self.UserAgent

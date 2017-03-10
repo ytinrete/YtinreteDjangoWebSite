@@ -1,5 +1,7 @@
 import math
 import requests
+import threading
+from bs4 import BeautifulSoup
 
 
 def get(url, params=None, headers=None):
@@ -20,11 +22,7 @@ def post(url, data=None, params=None, headers=None, files=None):
     pass
 
 
-if __name__ == "__main__":
-    # get("http://localhost:8000/python/TestOne")
-
-    # post()
-
+def page():
     page_size = 10
     page_group_size = 5  # don't change this at present
     context = {}
@@ -64,11 +62,37 @@ if __name__ == "__main__":
             for i in range(page_count - page_group_size + 1, page_count + 1):
                 context['page_list'].append(i)
         else:
-            for i in range(int(index - (page_group_size - 1) / 2), int(index +  (page_group_size - 1) / 2 +1)):
+            for i in range(int(index - (page_group_size - 1) / 2), int(index + (page_group_size - 1) / 2 + 1)):
                 context['page_list'].append(i)
 
     print(page_count)
     print(context)
+
+
+def test_thread(data):
+    if data and data.get('Addr'):
+        try:
+            r = requests.get('http://whatismyipaddress.com/ip/' + data.get('Addr'))
+            if r.status_code == 200:
+                html_tree = BeautifulSoup(r.text, 'lxml')
+                for meta in html_tree.head.select('meta'):
+                    if meta.get('name') == 'description':
+                        # print(meta.get('content'))
+                        location = meta.get('content')
+                        break
+        except BaseException as e:
+            print(e)
+
+        print('end')
+
+
+if __name__ == "__main__":
+    # get("http://localhost:8000/python/TestOne")
+
+    # post()
+
+    threading.Thread(target=test_thread, args=[{'Addr': '140.205.201.6'}]).start()
+
     print("ok")
 
     pass

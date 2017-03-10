@@ -13,6 +13,9 @@ from .models import VisitInfo
 import math
 import MessageBoard.kittycode
 import pytz
+import requests
+import threading
+from bs4 import BeautifulSoup
 
 from django.views.decorators.csrf import csrf_exempt
 
@@ -177,11 +180,9 @@ def get_visit_info(request):
             if front < 0:
                 front = 0
             data_list = VisitInfo.objects.all()[front:total:-1]
-            res = ""
-            for item in data_list:
-                res += '<div style="background-color: red;font-size: x-large;">' + item.TimeStr + ' ' + item.Addr + ' ' + item.Url + '</div>'
-                res += '<div  style="margin-left: 20px;">' + str(item.UserAgent) + "</div>"
-            return HttpResponse(res)
+            context = {}
+            context['data_list'] = data_list
+            return render(request, 'MessageBoard/visit_info.html', context)
         except BaseException as e:
             print(e)
             return HttpResponseServerError(None)
@@ -192,12 +193,31 @@ def get_visit_info(request):
 def record_visit(request):
     if request:
         if request.META:
-            try:
-                v = VisitInfo()
-                v.TimeStr = datetime.datetime.now(pytz.timezone('Asia/Shanghai')).strftime('%Y-%m-%d %H:%M:%S')
-                v.Url = request.get_full_path()
-                v.UserAgent = request.META.get("HTTP_USER_AGENT")
-                v.Addr = request.META.get("REMOTE_ADDR")
-                v.save()
-            except BaseException as e:
-                print(e)
+            threading.Thread(target=find_ip_location, args=[request]).start()
+
+
+def find_ip_location(request):
+    v = VisitInfo()
+    try:
+        v.TimeStr = datetime.datetime.now(pytz.timezone('Asia/Shanghai')).strftime('%Y-%m-%d %H:%M:%S')
+        v.Url = request.get_full_path()
+        v.UserAgent = request.META.get("HTTP_USER_AGENT")
+        v.Addr = request.META.get("REMOTE_ADDR")
+    except BaseException as e:
+        print(e)
+        return
+
+    if v.Addr:
+        try:
+            r = requests.get('http://whatismyipaddress.com/ip/' + v.Addr)
+            if r.status_code == 200:
+                html_tree = BeautifulSoup(r.text, 'lxml')
+                for meta in html_tree.head.select('meta'):
+                    if meta.get('name') == 'description':
+                        # print(meta.get('content'))
+                        v.Location = meta.get('content')
+                        break
+        except BaseException as e:
+            print(e)
+            # not quit
+    v.save()
