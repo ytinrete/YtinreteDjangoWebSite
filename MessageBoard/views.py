@@ -193,7 +193,7 @@ def get_visit_info(request):
 
             for item in reversed(data_list):
                 if item.Addr and item.Location == '':
-                    html_str = get_response_str(req_maker('http://whatismyipaddress.com/ip/' + item.get('Addr')))
+                    html_str = get_response_str(req_maker('http://whatismyipaddress.com/ip/' + item.Addr))
                     html_tree = BeautifulSoup(html_str, 'lxml')
                     for meta in html_tree.head.select('meta'):
                         if meta.get('name') == 'description':
