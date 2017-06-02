@@ -17,6 +17,7 @@ from urllib import request as req
 import zlib
 from bs4 import BeautifulSoup
 from .tasks import search_req
+from .tasks import send_new_thread_mail
 
 from django.views.decorators.csrf import csrf_exempt
 
@@ -94,6 +95,12 @@ def post_thread(request):
                 t.ImageUpload = save_file_name
 
             t.save()
+
+            if t.Author != 'ytinrete':
+                mail_str = t.Content
+                if request.FILES.get("file"):
+                    mail_str += " with picture:" + t.ImageUpload
+                send_new_thread_mail.delay(t.Author, mail_str)
 
             return HttpResponse("ok")
         except BaseException as e:

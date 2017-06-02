@@ -1,3 +1,8 @@
 SECRET_KEY = ''
 DEBUG = True
 ALLOWED_HOSTS = ['www.ytinrete.com', 'localhost', '10.234.98.128']
+MAIL_TASK_NAME=''
+MAIL_TASK_ACCOUNT = ''
+MAIL_TASK_PASSWD = ''
+MAIL_TASK_TO_NAME = ''
+MAIL_TASK_TO_ADDR = ''
