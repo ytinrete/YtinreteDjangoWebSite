@@ -16,6 +16,7 @@ import pytz
 from urllib import request as req
 import zlib
 from bs4 import BeautifulSoup
+from .tasks import search_req
 
 from django.views.decorators.csrf import csrf_exempt
 
@@ -185,7 +186,7 @@ def get_visit_info(request):
 
             for item in reversed(data_list):
                 if item.Addr and item.Location == '':
-                    html_str = get_response_str(req_maker('http://whatismyipaddress.com/ip/' + data.get('Addr')))
+                    html_str = get_response_str(req_maker('http://whatismyipaddress.com/ip/' + item.get('Addr')))
                     html_tree = BeautifulSoup(html_str, 'lxml')
                     for meta in html_tree.head.select('meta'):
                         if meta.get('name') == 'description':
@@ -231,6 +232,7 @@ def record_visit(request):
                 v.UserAgent = request.META.get("HTTP_USER_AGENT")
                 v.Addr = request.META.get("REMOTE_ADDR")
                 v.save()
+                search_req.delay(v.TimeStr)
             except BaseException as e:
                 print(e)
                 return

@@ -26,6 +26,12 @@ DEBUG = YtinretePythonServer.configs.DEBUG
 
 ALLOWED_HOSTS = YtinretePythonServer.configs.ALLOWED_HOSTS
 
+BROKER_URL = 'django://'
+
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -37,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'kombu.transport.django',
+    'djcelery'
 ]
 
 MIDDLEWARE_CLASSES = [
