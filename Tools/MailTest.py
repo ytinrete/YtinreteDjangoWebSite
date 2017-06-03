@@ -25,7 +25,7 @@ def send_mail(subject, content):
 
     server = smtplib.SMTP("smtp.mailgun.org", 25)
     server.starttls()  # ssl
-    server.set_debuglevel(1)
+    # server.set_debuglevel(1)
     server.login(account, passwd)
     server.sendmail(account, [to_addr], msg.as_string())
     server.quit()
