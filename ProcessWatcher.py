@@ -28,20 +28,22 @@ class ProcessWatcher(object):
                 time.sleep(self.__duration)
 
     def check_uwsgi(self, plist):
-        if self.check_process_exist(plist, 'uwsgi'):
-            print('uwsgi alive!')
-        else:
-            Tools.MailTest.send_mail('uwsgi die!', 'QAQ!')
-            print('uwsgi die!')
-            self.__uwsgi_die = True
+        if self.__uwsgi_die == False:
+            if self.check_process_exist(plist, 'uwsgi'):
+                print('uwsgi alive!')
+            else:
+                Tools.MailTest.send_mail('uwsgi die!', 'QAQ!')
+                print('uwsgi die!')
+                self.__uwsgi_die = True
 
     def check_celery(self, plist):
-        if self.check_process_exist(plist, 'celery'):
-            print('celery alive!')
-        else:
-            Tools.MailTest.send_mail('celery die!', 'QAQ!')
-            print('celery die!')
-            self.__celery_die = True
+        if self.__celery_die == False:
+            if self.check_process_exist(plist, 'celery'):
+                print('celery alive!')
+            else:
+                Tools.MailTest.send_mail('celery die!', 'QAQ!')
+                print('celery die!')
+                self.__celery_die = True
 
     def check_process_exist(self, plist, target):
         found = False
@@ -61,6 +63,4 @@ class ProcessWatcher(object):
 
 
 if __name__ == '__main__':
-    ProcessWatcher().set_duration(5).run()
-
-    pass
+    ProcessWatcher().run()
