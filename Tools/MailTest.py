@@ -1,4 +1,3 @@
-
 import YtinretePythonServer.configs
 from email import encoders
 from email.header import Header
@@ -8,7 +7,8 @@ from email.utils import parseaddr, formataddr
 
 import smtplib
 
-def send_new_thread_mail(content):
+
+def send_mail(subject, content):
     account = YtinretePythonServer.configs.MAIL_TASK_ACCOUNT
     passwd = YtinretePythonServer.configs.MAIL_TASK_PASSWD
     account_name = YtinretePythonServer.configs.MAIL_TASK_NAME
@@ -18,7 +18,7 @@ def send_new_thread_mail(content):
     msg = MIMEMultipart('alternative')
     msg["From"] = _format_addr(account_name + ('<%s>' % account))
     msg["To"] = _format_addr(to_name + ('<%s>' % to_addr))
-    msg["Subject"] = Header('New Post Thread', 'utf-8').encode()
+    msg["Subject"] = Header(subject, 'utf-8').encode()
 
     # 普通文本,alternative才能看得到,否则文本和html只能选一个
     msg.attach(MIMEText(content, "plain", "utf-8"))
@@ -30,11 +30,13 @@ def send_new_thread_mail(content):
     server.sendmail(account, [to_addr], msg.as_string())
     server.quit()
 
+
 def _format_addr(s):
     name, addr = parseaddr(s)
     return formataddr((Header(name, 'utf-8').encode(), addr))
 
+
 if __name__ == '__main__':
-    send_new_thread_mail("lalala")
+    send_mail('sub', "lalala")
 
     pass
