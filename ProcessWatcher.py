@@ -1,5 +1,6 @@
 import Tools.MailTest
 import time
+import datetime
 from subprocess import Popen, PIPE
 
 
@@ -19,13 +20,20 @@ class ProcessWatcher(object):
 
     def run(self):
         while (True):
-            plist = self.get_running_process_list()
-            if plist:
-                self.check_uwsgi(plist)
-                self.check_celery(plist)
-                if self.should_end_running():
-                    break
+            try:
+                plist = self.get_running_process_list()
+                if plist:
+                    self.check_uwsgi(plist)
+                    self.check_celery(plist)
+                    if self.should_end_running():
+                        print("exit in peace 0v0~", flush=True)
+                        break
+                else:
+                    print("Popen error, this might be the reason", flush=True)
                 time.sleep(self.__duration)
+                print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f'), flush=True)
+            except BaseException as e:
+                print(e, flush=True)
 
     def check_uwsgi(self, plist):
         if self.__uwsgi_die == False:
@@ -59,7 +67,7 @@ class ProcessWatcher(object):
             stdout, stderr = process.communicate()
             return str(stdout, encoding='utf-8').splitlines()
         except BaseException as e:
-            print(e)
+            print(e, flush=True)
 
 
 if __name__ == '__main__':
