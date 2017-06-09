@@ -30,8 +30,8 @@ class ProcessWatcher(object):
                         break
                 else:
                     print("Popen error, this might be the reason", flush=True)
-                time.sleep(self.__duration)
                 print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f'), flush=True)
+                time.sleep(self.__duration)
             except BaseException as e:
                 print(e, flush=True)
 
