@@ -18,6 +18,7 @@ import zlib
 from bs4 import BeautifulSoup
 from .tasks import search_req
 from .tasks import send_new_thread_mail
+import logging
 
 from django.views.decorators.csrf import csrf_exempt
 
@@ -28,6 +29,7 @@ def get_list(request):
         try:
             return HttpResponseServerError("interface is not in use yet!")
         except BaseException as e:
+            logging.getLogger("MessageBoard").exception(e)
             print(e)
         return HttpResponseServerError(None)
     else:
@@ -40,6 +42,7 @@ def add_thread(request):
         try:
             return HttpResponseServerError("interface is not in use yet!")
         except BaseException as e:
+            logging.getLogger("MessageBoard").exception(e)
             print(e)
         return HttpResponseServerError(None)
     else:
@@ -56,6 +59,7 @@ def img_upload(request):
                     for chunk in request.FILES['file'].chunks():
                         destination.write(chunk)
             except BaseException as e:
+                logging.getLogger("MessageBoard").exception(e)
                 print(e)
                 return HttpResponseServerError(None)
             # 返回成功
@@ -104,6 +108,7 @@ def post_thread(request):
 
             return HttpResponse("ok")
         except BaseException as e:
+            logging.getLogger("MessageBoard").exception(e)
             print(e)
         return HttpResponseServerError(None)
     else:
@@ -163,6 +168,7 @@ def index(request):
             return render(request, 'MessageBoard/index.html', context)
 
         except BaseException as e:
+            logging.getLogger("MessageBoard").exception(e)
             print(e)
         return HttpResponseServerError(None)
     else:
@@ -204,6 +210,7 @@ def get_visit_info(request):
                     break
             return render(request, 'MessageBoard/visit_info.html', context)
         except BaseException as e:
+            logging.getLogger("MessageBoard").exception(e)
             print(e)
             return HttpResponseServerError(None)
     else:
