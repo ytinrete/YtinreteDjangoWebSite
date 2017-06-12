@@ -13,7 +13,6 @@ from email.utils import parseaddr, formataddr
 import smtplib
 import zlib
 import YtinretePythonServer.configs
-import logging
 
 
 @task
@@ -32,7 +31,6 @@ def search_req(time_str):
                         v.save()  # just find first
                         break
     except BaseException as e:
-        logging.getLogger("MessageBoard").exception(e)
         print(e)
 
 
