@@ -9,6 +9,7 @@ class ProcessWatcher(object):
         self.__duration = 60 * 3  # 3min
         self.__uwsgi_die = False
         self.__celery_die = False
+        self.__ss_die = False
         pass
 
     def set_duration(self, duration):
@@ -25,6 +26,7 @@ class ProcessWatcher(object):
                 if plist:
                     self.check_uwsgi(plist)
                     self.check_celery(plist)
+                    self.check_ss(plist)
                     if self.should_end_running():
                         print("exit in peace 0v0~", flush=True)
                         break
@@ -52,6 +54,15 @@ class ProcessWatcher(object):
                 Tools.MailTest.send_mail('celery die!', 'QAQ!')
                 print('celery die!')
                 self.__celery_die = True
+
+    def check_ss(self, plist):
+        if self.__ss_die == False:
+            if self.check_process_exist(plist, 'ssserver'):
+                print('ssserver alive!')
+            else:
+                Tools.MailTest.send_mail('ssserver die!', 'QAQ!')
+                print('ssserver die!')
+                self.__ss_die = True
 
     def check_process_exist(self, plist, target):
         found = False
