@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.shortcuts import render
 
 # Create your views here.
@@ -138,8 +139,8 @@ def index(request):
             back = front + page_size - 1
             if back > count:
                 back = count
-            if index != 1:
-                context['pre'] = index - 1
+            # if index != 1:
+            context['pre'] = index - 1
 
             if back != count:
                 context['next'] = index + 1
