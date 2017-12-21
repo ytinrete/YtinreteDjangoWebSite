@@ -139,11 +139,15 @@ def index(request):
             back = front + page_size - 1
             if back > count:
                 back = count
-            # if index != 1:
-            context['pre'] = index - 1
+            if index != 1:
+                context['pre'] = index - 1
+            else:
+                context['pre'] = None
 
             if back != count:
                 context['next'] = index + 1
+            else:
+                context['next'] = None
 
             page_count = math.ceil(float(count) / 10)
 
