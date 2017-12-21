@@ -49,14 +49,38 @@ def search_req(time_str):
     try:
         for v in VisitInfo.objects.raw('SELECT * FROM MessageBoard_visitinfo WHERE TimeStr = %s', [time_str]):
             if v.Addr and v.Location == '':
-                html_str = get(common_request_maker('http://whatismyipaddress.com/ip/' + v.Addr))
-                html_tree = BeautifulSoup(html_str, 'lxml')
-                for meta in html_tree.head.select('meta'):
-                    if meta.get('name') == 'description':
-                        # print(meta.get('content'))
-                        v.Location = meta.get('content')
-                        v.save()  # just find first
-                        break
+                location = get_location2(v.Addr)
+                if location is None:
+                    location = get_location1(v.Addr)
+
+                if location:
+                    v.Location = location
+                    v.save()  # just find first
+                    break
+
+    except BaseException as e:
+        print(e)
+
+
+def get_location1(ip):
+    try:
+        html_str = get(common_request_maker('http://whatismyipaddress.com/ip/' + ip))
+        html_tree = BeautifulSoup(html_str, 'lxml')
+        for meta in html_tree.head.select('meta'):
+            if meta.get('name') == 'description':
+                return meta.get('content')
+
+    except BaseException as e:
+        print(e)
+
+
+def get_location2(ip):
+    try:
+        html_str = get(common_request_maker('http://www.ip.cn/index.php?ip=' + ip))
+        html_tree = BeautifulSoup(html_str, 'lxml')
+        for meta in html_tree.find_all("div", class_='well'):
+            return meta.text
+
     except BaseException as e:
         print(e)
 
