@@ -199,6 +199,9 @@ def get_visit_info(request):
             if front < 0:
                 front = 0
             data_list = VisitInfo.objects.all()[front:total:-1]
+            if not request.GET.get('all'):
+                data_list = [x for x in data_list
+                             if not ((str(x.UserAgent).find('bot') >= 0) or str(x.UserAgent).find('spider') >= 0)]
             context = {}
             context['data_list'] = data_list
 
